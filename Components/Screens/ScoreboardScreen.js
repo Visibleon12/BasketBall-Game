@@ -1,29 +1,72 @@
 import React,{Component} from 'react'
-import {  View,Text,StyleSheet } from 'react-native'
+import {  View,Text,StyleSheet,BackHandler } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import ButtonComponent from '../ButtonComponent'
 import FlatListComponent from '../FlatListComponent'
 import {connect} from 'react-redux'
+import { ignoreElements } from 'rxjs/operators'
+import { greaterThan } from 'react-native-reanimated'
 
- class ScoreboardScreen extends Component{
+ class ScoreboardScreen extends React.PureComponent{
     constructor(props){
         super(props)
         this.state={
-            sortKey:'Score',
-            sortorderScore:'Des',
-            sortorderDate:'Des'
+            
         }
     }
-    
+    componentDidMount() {
+           
+       
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+     }
+   
+     componentWillUnmount() {
+       BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+       this.count=0
+     }
+   
+     handleBackPress = () => {
+      this.props.navigation.goBack()
+      return true
+     }
+
+    getSymbol=(sortKey)=>{
+        if(sortKey==='Name'){
+            if(this.props.sortorderName==='Des'){
+                return '↑'
+            }
+            else{
+                return '↓'
+            }
+        }
+        else if(sortKey==='Score'){
+            if(this.props.sortorderScore==='Des'){
+                return '↑'
+            }
+            else{
+                return '↓'
+            }
+        }
+        else{
+            if(this.props.sortorderDate==='Des'){
+                return '↑'
+            }
+            else{
+                return '↓'
+            }
+        }
+
+    }
     render(){
         return(
             <View style={styles.container}>
                 <View style={styles.innerContainer}>
-                    <ButtonComponent title='Name' onPressAction={()=>{}} style={{}}/>
-                    <ButtonComponent  title='Score' onPressAction={()=>{this.setState({sortKey:'Score',sortorderScore:(this.state.sortorderScore==='Des')?'Asc':'Des'})}} style={{}}/>
-                    <ButtonComponent  title='Date/Time' onPressAction={()=>{this.setState({sortKey:'Date',sortorderScore:(this.state.sortorderDate==='Des')?'Asc':'Des'})}}style={{}}/>
+                    <ButtonComponent title={'Name '+this.getSymbol('Name')} onPressAction={()=>{this.props.dispatch({type:'Sort Data',sortKey:'Name',sortorderName:(this.props.sortorderName==='Des')?'Asc':'Des',sortorderScore:this.props.sortorderScore,sortorderDate:this.props.sortorderDate})}} style={{}} color={(this.props.sortKey==='Name')?'green':'white'}/>
+                    <ButtonComponent  title={'Score '+this.getSymbol('Score')} onPressAction={()=>{this.props.dispatch({type:'Sort Data',sortKey:'Score',sortorderName:this.props.sortorderName,sortorderScore:(this.props.sortorderScore==='Des')?'Asc':'Des',sortorderDate:this.props.sortorderDate})}} style={{}} color={(this.props.sortKey==='Score')?'green':'white'}/>
+                    <ButtonComponent  title={'Date/Time '+this.getSymbol('Date')} onPressAction={()=>{this.props.dispatch({type:'Sort Data',sortKey:'Date',sortorderName:this.props.sortorderName,sortorderScore:this.props.sortorderScore,sortorderDate:(this.props.sortorderDate==='Des')?'Asc':'Des'})}}style={{}} color={(this.props.sortKey==='Date')?'green':'white'}/>
                 </View>
-                <FlatListComponent sortKey={this.state.sortKey} sortorderDate={this.state.sortorderDate} sortorderScore={this.state.sortorderScore}/>
+                <Text style={{width:'100%',fontSize:15}}>{'Data Displayed :'+this.props.data.length+'/'+this.props.length}</Text>
+                <FlatListComponent  />
             </View>
         )
     }
@@ -32,7 +75,12 @@ import {connect} from 'react-redux'
 const mapstatetoProps=(state)=>{
     return({
         sortorderScore:state.R2.sortorderScore,
-        sortorderDate:state.R2.sortorderDate
+        sortorderDate:state.R2.sortorderDate,
+        sortorderName:state.R2.sortorderName,
+        sortKey:state.R2.sortKey,
+        length:state.R2.length,
+        count:state.R2.count,
+        data:state.R2.dataShown
     })
 }
 export default connect(mapstatetoProps)(ScoreboardScreen)

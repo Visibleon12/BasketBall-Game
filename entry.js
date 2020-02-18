@@ -3,7 +3,7 @@ import App from './App'
 import React ,{Component,useEffect} from 'react'
 import {createEpicMiddleware} from 'redux-observable'
 import { createStore ,applyMiddleware} from 'redux';
-
+import FlashMessage from 'react-native-flash-message'
 import { Provider, connect } from 'react-redux';
 import rootReducer from './root'
 import rootEpic from './observer'
@@ -33,6 +33,7 @@ const Entry: () => React$Node = () => {
         <Provider store={store}>
             <PersistGate persistor={persistor} >
                 <App/>
+                <FlashMessage position='center' />
             </PersistGate>
         </Provider>
         )

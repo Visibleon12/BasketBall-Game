@@ -3,7 +3,7 @@ import { ImageBackground, View,Image,PanResponder,Animated,Dimensions } from 're
 
 import BallComponent from './BallComponent'
 import ButtonComponent from './ButtonComponent'
-export default class Floor extends Component{
+export default class Floor extends React.PureComponent{
     
     render(){
             

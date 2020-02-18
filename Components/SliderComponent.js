@@ -4,7 +4,7 @@ import {View,Text,StyleSheet} from 'react-native'
 
 
 
-export default class SliderComponent extends Component{
+export default class SliderComponent extends React.PureComponent{
     constructor(props){
         super(props)
        
@@ -15,7 +15,7 @@ export default class SliderComponent extends Component{
             <View style={styles.container}>
                 <Slider
                     step={1}
-                    maximumValue={100}
+                    maximumValue={this.props.maxValue}
                     value={this.props.value}
                     
                     onValueChange={(value)=>{if(this.props.value<this.props.minValue){this.props.cback(this.props.minValue)}else{this.props.cback(value)}}}
@@ -32,7 +32,7 @@ export default class SliderComponent extends Component{
                         <Text style={styles.colorViolet}>
                             {this.props.value}
                         </Text>
-                        <Text style={styles.colorBlack}>100 </Text>
+                        <Text style={styles.colorBlack}>{this.props.maxValue} </Text>
                 </View>
 
 

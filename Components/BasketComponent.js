@@ -1,17 +1,43 @@
 import React,{Component} from 'react'
-import {View} from 'react-native'
+import {View,StyleSheet, Image, ImageComponent} from 'react-native'
+import {connect} from 'react-redux'
 
-
-export default class BasketComponent extends Component{
+ class BasketComponent extends React.PureComponent{
 
     render(){
         return(
             
            
-                <View style={{height:150,width:150,borderColor:'red',borderRadius:75,borderWidth:10,borderStyle:'solid',transform:[]}}>
-
-                </View>
+            <View style={[styles.netContainer,]}>
+                
+                <Image
+                source={{uri:'https://ya-webdesign.com/transparent250_/basketball-net-silhouette-png-1.png'}}
+                style={{height:100,width:130,transform:[{scale:0.9},]}}
+                />
+            </View>
            
         )
     }
 }
+
+const mapStateToProps=(state)=>{
+    return({
+        
+        basketradius:state.R1.basketradius,
+        
+    })
+}
+export default connect(mapStateToProps)(BasketComponent)
+
+const styles = StyleSheet.create({
+    
+    netContainer: {
+        position: 'absolute',
+        
+        borderRadius: 3,
+        alignSelf:'center',
+        marginTop:(Platform.OS==="ios")?295:200,zIndex:1
+    
+    }
+      
+  });

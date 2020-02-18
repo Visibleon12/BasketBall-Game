@@ -3,8 +3,8 @@ import {Picker,Platform,ActionSheetIOS,View,Text} from 'react-native'
 
 
 import ButtonComponent from './ButtonComponent'
-const options=['Red','Green','Orange']
-export default class DropDownComponent extends Component{
+const options=['red','green','orange']
+export default class DropDownComponent extends React.PureComponent{
      
     actionSheet=()=>{
         console.log('in')
@@ -29,7 +29,7 @@ export default class DropDownComponent extends Component{
             selectedValue={this.props.value}
             onValueChange={(itemValue, itemIndex) => this.props.cback(itemValue)}
             mode='dropdown'
-            style={{height: 50, width: 100}}>
+            style={{height: 50, width: 200}}>
             
             <Picker.Item label="Red" value='red' />
             <Picker.Item label="Green" value='green' />

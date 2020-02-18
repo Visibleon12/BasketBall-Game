@@ -3,12 +3,12 @@ import { View,Animated ,PanResponder,Text, Dimensions} from 'react-native'
 import {connect} from 'react-redux'
 
 
- class BallComponent extends Component{
+ class BallComponent extends React.PureComponent{
     constructor(props) {
         super(props);
         this.translateX=new Animated.Value(0)
-        this.left=new Animated.Value(Dimensions.get('window').width/2)
-        this._gestureOffset = { x: 0 };
+        
+        this._gestureOffset = { x: 0 ,y:0};
         this._panResponder = PanResponder.create({
            
             onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -20,7 +20,9 @@ import {connect} from 'react-redux'
               
             },
             onPanResponderMove: (evt, gestureState) => {
-                if(this.props.PanResponderOff===true){}
+                if(this.props.PanResponderOff===true){
+
+                }
                 else{
                 this.translateX.setValue(
                      this._gestureOffset.x + gestureState.dx,
@@ -30,9 +32,14 @@ import {connect} from 'react-redux'
             },
             
             onPanResponderRelease: (evt, gestureState) => {
-                if(this.props.PanResponderOff===true){}
+                if(this.props.PanResponderOff===true){
+                    console.log(gestureState)
+                    this.props.cBackSwipe(this._gestureOffset.x,this._gestureOffset.y,gestureState.dx,gestureState.dy)
+                }
                 else{
-                this._gestureOffset.x += gestureState.dx;}
+                this._gestureOffset.x += gestureState.dx;
+                
+                }
                 
             },
             

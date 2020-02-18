@@ -4,7 +4,7 @@ import {View,Image} from 'react-native'
 
 
 
-export default class SplashScreen extends Component{
+export default class SplashScreen extends React.PureComponent{
 
     render(){
         return(

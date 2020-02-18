@@ -3,8 +3,9 @@ import { View ,StyleSheet,Text,Image,BackHandler} from 'react-native'
 import ButtonComponent from '../ButtonComponent'
 
 import {connect } from 'react-redux'
+import { showMessage } from 'react-native-flash-message'
 
- class HomeScreen extends Component{
+ class HomeScreen extends React.PureComponent{
     constructor(props){
         super(props)
         this.handleBackPress = this.handleBackPress.bind(this);
@@ -19,9 +20,9 @@ import {connect } from 'react-redux'
     onPressScorecard=()=>{
         this.props.navigation.push('Scoreboard')}
         componentDidMount() {
-           
+            console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
             if(this.props.dataonKill!=''){
-                this.props.dispatch({type:'Entry',name:this.props.dataonKill.name,score:this.props.dataonKill.score})
+                this.props.dispatch({type:'Append data',value:{...this.props.dataonKill}})
                 this.props.dispatch({type:'reset'})
              }
              BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
@@ -35,11 +36,13 @@ import {connect } from 'react-redux'
           handleBackPress = () => {
             if(this.count==0){
                 this.count=1
-                alert('Press Again to exit')
+                showMessage({message:'Press Again to Exit',type:'default',duration:2000,position:'bottom'})
+                setTimeout(()=>{this.count=0},2000)
                 return true;
             }
             else{
-                
+                this.count=0
+                BackHandler.exitApp()
                 return true;
             }
             
@@ -53,7 +56,7 @@ import {connect } from 'react-redux'
                 <ButtonComponent title='Settings' onPressAction={this.onPressSettings} style={styles.settingsbutton}/>
                 <Text style={styles.text}>BasketBall Game</Text>
                 <Image
-                source={{uri:'https://www.animatedimages.org/data/media/159/animated-basketball-image-0036.gif'}}
+                source={{uri:'https://media.tenor.com/images/376f97088d766c7b714190fe90ad8799/tenor.gif'}}
                 style={styles.gif}
                 />
                 <View style={{flex:0.4,justifyContent:'space-evenly'}}>
@@ -101,7 +104,7 @@ const styles=StyleSheet.create({
     },
     settingsbutton:{
         
-        width:90,
+        
         height:50,
         backgroundColor:'#FFD700',
         alignItems:'center',

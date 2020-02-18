@@ -1,15 +1,16 @@
 import React,{Component} from 'react'
-import {View,StyleSheet,Text} from 'react-native'
+import {View,StyleSheet,Text,BackHandler} from 'react-native'
 import DropDownComponent from '../DropDownComponent'
 import ButtonComponent from '../ButtonComponent'
 import SliderComponent from '../SliderComponent'
 import {connect} from 'react-redux'
 import { dispatch } from 'rxjs/internal/observable/pairs'
 import { timestamp } from 'rxjs/operators'
- class SettingsScreen extends Component{
+ class SettingsScreen extends React.PureComponent{
 
     constructor(props){
         super(props)
+        this.handleBackPress=this.handleBackPress.bind(this)
         this.state={
             ballcolor:this.props.ballcolor,
             ballspeed:this.props.ballspeed,
@@ -31,43 +32,57 @@ import { timestamp } from 'rxjs/operators'
         }
     }
     onPressResetToDefault=()=>{
-       this.props. dispatch({type:'ResetToDefault'})
-       this.props.navigation.goBack()
+       this.props.dispatch({type:'ResetToDefault'})
     }
-    onPressSave=()=>{this.props.dispatch({type:'Save Pressed',
+
+    onPressSave=()=>{
+        this.props.dispatch({type:'Save Pressed',
                                value:{ballColor:this.state.ballcolor,
                                 ballspeed:this.state.ballspeed,
                                 ballradius:this.state.ballradius,
                                 basketradius:this.state.basketradius} })
-                    }
+        this.props.navigation.goBack()
+    }
 
 
     onPressPlus=()=>{this.setState({ballspeed:this.state.ballspeed+1})}
     onPressMinus=()=>{this.setState({ballspeed:this.state.ballspeed-1})}
+    componentDidMount() {
+         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+    
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+    }
+    
+    handleBackPress = () => {
+       this.props.navigation.goBack()
+       return true
+    }
     render(){
         
         return(
             <View style={styles.container}>
-                <ButtonComponent title='Reset To Default' onPressAction={this.onPressResetToDefault} style={styles.buttonReset}/>
+                <ButtonComponent title='Reset' onPressAction={this.onPressResetToDefault} style={styles.buttonReset}/>
                 <View style={styles.View}>
                     <Text style={styles.text}>Ball Color:</Text>
                     <DropDownComponent value={this.state.ballcolor} cback={this.cBackBallColor}/>
                 </View>
                 <View style={styles.View}>
                     <Text style={styles.text}>Ball Radius:</Text>
-                    <SliderComponent value={this.state.ballradius} cback={this.cBackBallRadius} minValue={0}/>
+                    <SliderComponent value={this.state.ballradius} cback={this.cBackBallRadius} minValue={15} maxValue={30}/>
                 </View>
                 <View style={styles.View}>
                     <Text style={styles.text}>Ball Speed:</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-evenly',width:'50%'}}>
-                        <ButtonComponent title='-' onPressAction={this.onPressMinus} style={styles.buttonminus} />
+                        <ButtonComponent title='-' onPressAction={this.onPressMinus} style={styles.buttonminus} disabled={(this.state.ballspeed<=1)?true:false} />
                         <Text style={{fontSize:30}}>{this.state.ballspeed}</Text>
-                        <ButtonComponent title='+' onPressAction={this.onPressPlus} style={styles.buttonPlus} />
+                        <ButtonComponent title='+' onPressAction={this.onPressPlus} style={styles.buttonPlus} disabled={(this.state.ballspeed>=5)?true:false}/>
                     </View>
                 </View>
                 <View style={styles.View}>
                     <Text style={styles.text}>Basket Radius:</Text>
-                    <SliderComponent value={this.state.basketradius} cback={this.cBackBasketRadius} minValue={this.state.ballradius}/>
+                    <SliderComponent value={this.state.basketradius} cback={this.cBackBasketRadius} minValue={this.state.ballradius} maxValue={32}/>
                 </View>
                 <ButtonComponent title='Save' onPressAction={this.onPressSave} style={styles.buttonSave}/>
             </View>
@@ -94,13 +109,14 @@ const styles=StyleSheet.create({
         alignItems:'center'
     },
     buttonReset:{
-        
+        marginEnd:5,
         height:50,
-        backgroundColor:'#FFD700',
+        width:80,
+        backgroundColor:'black',
         alignItems:'center',
         justifyContent:'center',
         borderRadius:15,
-        marginStart:220
+        alignSelf:'flex-end'
     },
     buttonSave:{
         width:100,
@@ -112,7 +128,7 @@ const styles=StyleSheet.create({
         
     },
     text:{
-        fontSize:30,
+        fontSize:20,
         
     },
     buttonminus:{
@@ -134,7 +150,8 @@ const styles=StyleSheet.create({
     View:{
         width:"100%",
         flexDirection:'row',
-        justifyContent:'space-around'
+        justifyContent:'space-around',
+        padding:10
     }
 
 })

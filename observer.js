@@ -8,7 +8,7 @@ export default function logAction(action){
        a=await fetch('http://worldtimeapi.org/api/timezone/Asia/Kolkata')
             .then((response) => response.json())
             .then((responseJson) => {
-               return ({date:responseJson.datetime,unixTime:responseJson.unixTime})
+               return ({date:responseJson.datetime,unixTime:responseJson.unixtime})
            
             })
             .catch((error) => {
@@ -17,9 +17,9 @@ export default function logAction(action){
             
              b=a.date.slice(0,10)
              c=a.date.slice(11,19)
-             console.log(action)
+             console.log(a)
          return({
-        type:'Append data',
+        type:'onModalon',
         value:{name:action.name,score:action.score,date:b+' '+c,unixTime:a.unixTime}
              })
          

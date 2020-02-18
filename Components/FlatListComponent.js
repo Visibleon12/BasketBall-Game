@@ -6,13 +6,14 @@ import {connect} from 'react-redux'
 
 
 
-class FlatListComponent extends Component{
+class FlatListComponent extends React.PureComponent{
     constructor(props){
         super(props)
+        this.count=0
         this.state={
             
             fetchingStatus:false,
-            itemsToRender:13
+            
         }
     }
    
@@ -34,38 +35,39 @@ class FlatListComponent extends Component{
         
     )
   }
-    getData=()=>{if(this.props.sortKey==='Score'){
+   componentDidMount(){
+    this.props.dispatch({type:'Sort Data',sortKey:this.props.sortKey1,sortorderName:this.props.sortorderName1,sortorderScore:this.props.sortorderScore1,sortorderDate:this.props.sortorderDate1})
+    
+    
+   }
+    
+    componentWillUnmount(){
+        this.count=0
+        this.props.dispatch({type:'Reset DataShown'})
+    }
+    // paginated=()=>{
+    //     if(this.count==0){
+    //         this.props.dispatch({type:'Sort Data',sortKey:this.props.sortKey1,sortorderName:this.props.sortorderName1,sortorderScore:this.props.sortorderScore1,sortorderDate:this.props.sortorderDate1})
+    //         this.count=1
+    //         return this.props.dataShown
+    //     }
+
+    //     else{
+    //     this.props.dispatch({type:'Sort Data',sortKey:this.props.sortKey,sortorderName:this.props.sortorderName,sortorderScore:this.props.sortorderScore,sortorderDate:this.props.sortorderDate})
         
-        if(this.props.sortorderScore==='Des'){
-               return this.props.data.sort((a,b) => b.score-a.score) 
+    //     return this.props.dataShown
+    //     }
+        
+
+    // }
+
+    onEndReached=()=>{
+        if(this.props.dataShown.length<this.props.length){
+        this.setState({fetchingStatus:true})
+        setTimeout(()=>{this.setState({fetchingStatus:false}),this.props.dispatch({type:'on End Reached'})},5000)
         }
-        else{
-            return this.props.data.sort(function(a,b){return a.score-b.score})
-        }
+        
     }
-    else{
-       
-        if(this.props.sortorderDate='Des')
-           return this.props.data.sort(function(a,b){return b.date-a.date})
-        else{
-           return this.props.data.sort(function(a,b){return a.date-b.date})
-
-        }
-    }
-}
-
-paginated=()=>{
-    const data=this.getData()
-    
-    return data.slice(0,this.state.itemsToRender)
-    
-    
-
-}
-onEndReached=()=>{
-    this.setState({fetchingStatus:true})
-    setTimeout(()=>{this.setState({fetchingStatus:false,itemsToRender:this.state.itemsToRender+10})},2000)
-}
     renderSeparator = () => {
         return (
           <View
@@ -82,7 +84,7 @@ onEndReached=()=>{
         return(
             
             <FlatList
-                data={this.paginated()}
+                data={this.props.dataShown}
                 renderItem={({item})=>{
                     
                     return(
@@ -93,7 +95,7 @@ onEndReached=()=>{
                         </View>
                     )
                 }}
-                keyExtractor={(item)=>item.date}
+                keyExtractor={(item)=>item.unixTime}
                 ItemSeparatorComponent={this.renderSeparator}
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}
@@ -107,27 +109,32 @@ onEndReached=()=>{
     }
 }
 
-const mapStateToProps=(state)=>{
-   
-    return({
-    data:state.R2.data
-})}
-export default connect(mapStateToProps)(FlatListComponent)
-const styles=StyleSheet.create({
-   
-    innerContainer:{
-        flexDirection:'row',
-        width:400,
-        height:60,
-        marginTop:10,
+    const mapStateToProps=(state)=>{
         
-    },
-    text:{
-        fontSize:25,
-        width:190,
-       
+        return({
+        dataShown:state.R2.dataShown,
+        sortKey1:state.R2.sortKey,
+        sortorderDate1:state.R2.sortorderDate,
+        sortorderName1:state.R2.sortorderName,
+        sortorderScore1:state.R2.sortorderScore,
+        length:state.R2.length
+    })}
+    export default connect(mapStateToProps)(FlatListComponent)
+    const styles=StyleSheet.create({
+    
+        innerContainer:{
+            flexDirection:'row',
+            width:400,
+            height:70,
+            marginTop:10,
+            
+        },
+        text:{
+            fontSize:25,
+            width:190,
         
-    }
-      
+            
+        }
+        
 
-})
+    })

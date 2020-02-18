@@ -2,7 +2,7 @@ const initialState={
     ballColor:'orange',
     ballspeed:2,
     ballradius:25,
-    basketradius:50
+    basketradius:27
 }
 
 

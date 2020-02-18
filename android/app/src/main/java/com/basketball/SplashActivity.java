@@ -1,8 +1,10 @@
-package com.rn_splashscreen_tutorial; // Change this to your package name.
+package com.basketball; // Change this to your package name.
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.basketball.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
     @Override
