@@ -30,7 +30,8 @@ class PlayAreaScreen extends React.PureComponent{
             translateXcheck:1,
             scale1:2,
             translatey:0,
-            PanResponderOff:false
+            PanResponderOff:false,
+            PanResponderOffOnSwipe:false
         }
     }
 
@@ -87,7 +88,7 @@ class PlayAreaScreen extends React.PureComponent{
     }
 
     animation=()=>{
-        this.setState({translateXcheck:this.state.translateX,PanResponderOff:true})
+        this.setState({translateXcheck:this.state.translateX,PanResponderOff:true,PanResponderOffOnSwipe:true})
         setTimeout(()=>{this.setState({zIndex:0})},(6000-this.props.ballspeed*1000)/2)
         Animated.sequence([
             Animated.timing(this.a,{
@@ -102,7 +103,7 @@ class PlayAreaScreen extends React.PureComponent{
         
                 this.setState({score:this.state.score+1})}
                 this.a.setValue(0)
-                this.setState({zIndex:2,PanResponderOff:false})
+                this.setState({zIndex:2,PanResponderOff:false,PanResponderOffOnSwipe:false})
     })
    
     
@@ -170,8 +171,8 @@ class PlayAreaScreen extends React.PureComponent{
                  <Wall score={this.state.score} cBackTimer={this.cBackTimer} TimerReload={this.state.RestartPressed}/>
                  <Floor/>
                 <BasketComponent/>
-                <BallComponent    style={BallStyle} scale1={scale1} translatey={(Math.abs(this.state.translateX)<=this.getOffset())?translateyWin:translateyLose} cBackPanGesture={this.cBackPanGesture}  translateX={translatexWin} PanResponderOff={this.state.PanResponderOff} cBackSwipe={this.cBackSwipe.bind(this)}/>
-                <ButtonComponent title='Shoot' onPressAction={this.onPressShoot} style={{alignSelf:'center',height:50,width:100,backgroundColor:'black',alignItems:'center',justifyContent:'center'}} disabled={(this.state.PanResponderOff===false)?false:true} />
+                <BallComponent    style={BallStyle} scale1={scale1} translatey={(Math.abs(this.state.translateX)<=this.getOffset())?translateyWin:translateyLose} cBackPanGesture={this.cBackPanGesture}  translateX={translatexWin} PanResponderOff={this.state.PanResponderOff} PanResponderOffOnSwipe={this.state.PanResponderOffOnSwipe} cBackSwipe={this.cBackSwipe.bind(this)}/>
+                <ButtonComponent title='Lockreactr' onPressAction={this.onPressShoot} style={{alignSelf:'center',height:50,width:100,backgroundColor:'black',alignItems:'center',justifyContent:'center'}} disabled={(this.state.PanResponderOff===false)?false:true} />
                 <Modal modalVisible={this.state.modalVisible} score={this.state.score} navigation={this.props.navigation} cBackAnimation={this.cBackAnimation} shootPressed={this.state.shootPressed} cBackModal={this.cBackModal}/>
             </Animated.View>
         )

@@ -33,8 +33,9 @@ import {connect} from 'react-redux'
             
             onPanResponderRelease: (evt, gestureState) => {
                 if(this.props.PanResponderOff===true){
-                    console.log(gestureState)
-                    this.props.cBackSwipe(this._gestureOffset.x,this._gestureOffset.y,gestureState.dx,gestureState.dy)
+                    if(this.props.PanResponderOffOnSwipe===true){}
+                    else{
+                    this.props.cBackSwipe(this._gestureOffset.x,this._gestureOffset.y,gestureState.dx,gestureState.dy)}
                 }
                 else{
                 this._gestureOffset.x += gestureState.dx;
