@@ -62,9 +62,10 @@ class FlatListComponent extends React.PureComponent{
     // }
 
     onEndReached=()=>{
-        if(this.props.dataShown.length<this.props.length){
+        if(this.props.dataShown.length<this.props.length && this.count===0){
+        this.count=1
         this.setState({fetchingStatus:true})
-        setTimeout(()=>{this.setState({fetchingStatus:false}),this.props.dispatch({type:'on End Reached'})},1000)
+        this.setState({fetchingStatus:false}),this.props.dispatch({type:'on End Reached'})
         }
         
     }

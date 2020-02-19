@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import {  View ,Animated,StyleSheet,Dimensions,BackHandler, Platform} from 'react-native'
+import {  View ,Animated,StyleSheet,Dimensions,BackHandler, Platform,Image} from 'react-native'
 import BasketComponent from '../BasketComponent'
 import {connect} from 'react-redux'
 import Wall from '../Wall'
@@ -31,7 +31,9 @@ class PlayAreaScreen extends React.PureComponent{
             scale1:2,
             translatey:0,
             PanResponderOff:false,
-            PanResponderOffOnSwipe:false
+            PanResponderOffOnSwipe:false,
+            Clapping:false
+           
         }
     }
 
@@ -90,20 +92,23 @@ class PlayAreaScreen extends React.PureComponent{
     animation=()=>{
         this.setState({translateXcheck:this.state.translateX,PanResponderOff:true,PanResponderOffOnSwipe:true})
         setTimeout(()=>{this.setState({zIndex:0})},(6000-this.props.ballspeed*1000)/2)
-        Animated.sequence([
+        
             Animated.timing(this.a,{
                 toValue:4,
                 duration:6000-this.props.ballspeed*1000,
                 useNativeDriver:true
         
-            }),
-            Animated.spring(this.a,{toValue:5,bounciness:25,speed:20,useNativeDriver:true})
-        ]).start(()=>{
+            }).start(()=>{
+
+                Animated.spring(this.a,{toValue:5,bounciness:25,speed:20,useNativeDriver:true}).start(()=>{this.a.setValue(0)
+                    this.setState({zIndex:2,PanResponderOff:false,PanResponderOffOnSwipe:false,Clapping:false})})
                 if(Math.abs(this.state.translatexEnd)<=20){
+                
+                this.setState({score:this.state.score+1,Clapping:true})}
+                
+            
+            
         
-                this.setState({score:this.state.score+1})}
-                this.a.setValue(0)
-                this.setState({zIndex:2,PanResponderOff:false,PanResponderOffOnSwipe:false})
     })
    
     
@@ -170,9 +175,14 @@ class PlayAreaScreen extends React.PureComponent{
             <Animated.View style={{flex:1,backgroundColor:'green'}}>
                  <Wall score={this.state.score} cBackTimer={this.cBackTimer} TimerReload={this.state.RestartPressed}/>
                  <Floor/>
+                 {(this.state.Clapping===true)?
+                 <Image
+                 source={{uri:'https://i.pinimg.com/originals/16/7c/3b/167c3bc57c632bd458e87e76df488f53.gif'}}
+                 style={{position:'absolute',height:100,width:100,alignSelf:'center',top:Dimensions.get('screen').height/2}}
+                 />:<></>}
                 <BasketComponent/>
                 <BallComponent    style={BallStyle} scale1={scale1} translatey={(Math.abs(this.state.translateX)<=this.getOffset())?translateyWin:translateyLose} cBackPanGesture={this.cBackPanGesture}  translateX={translatexWin} PanResponderOff={this.state.PanResponderOff} PanResponderOffOnSwipe={this.state.PanResponderOffOnSwipe} cBackSwipe={this.cBackSwipe.bind(this)}/>
-                <ButtonComponent title='Lockreactr' onPressAction={this.onPressShoot} style={{alignSelf:'center',height:50,width:100,backgroundColor:'black',alignItems:'center',justifyContent:'center'}} disabled={(this.state.PanResponderOff===false)?false:true} />
+                <ButtonComponent title='Lock' onPressAction={this.onPressShoot} style={{alignSelf:'center',height:50,width:100,backgroundColor:'black',alignItems:'center',justifyContent:'center'}} disabled={(this.state.PanResponderOff===false)?false:true} />
                 <Modal modalVisible={this.state.modalVisible} score={this.state.score} navigation={this.props.navigation} cBackAnimation={this.cBackAnimation} shootPressed={this.state.shootPressed} cBackModal={this.cBackModal}/>
             </Animated.View>
         )
